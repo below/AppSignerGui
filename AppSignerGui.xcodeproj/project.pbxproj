@@ -13,6 +13,18 @@
 		AA161631266114C800BF7394 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA161630266114C800BF7394 /* Preview Assets.xcassets */; };
 		AA161633266114C800BF7394 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA161632266114C800BF7394 /* Persistence.swift */; };
 		AA161636266114C800BF7394 /* AppSignerGui.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA161634266114C800BF7394 /* AppSignerGui.xcdatamodeld */; };
+		AA16166326611BDD00BF7394 /* PackageName+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165726611BDD00BF7394 /* PackageName+CoreDataClass.swift */; };
+		AA16166426611BDD00BF7394 /* PackageName+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165826611BDD00BF7394 /* PackageName+CoreDataProperties.swift */; };
+		AA16166526611BDD00BF7394 /* KeyPass+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165926611BDD00BF7394 /* KeyPass+CoreDataClass.swift */; };
+		AA16166626611BDD00BF7394 /* KeyPass+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165A26611BDD00BF7394 /* KeyPass+CoreDataProperties.swift */; };
+		AA16166726611BDD00BF7394 /* Item+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165B26611BDD00BF7394 /* Item+CoreDataClass.swift */; };
+		AA16166826611BDD00BF7394 /* Item+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165C26611BDD00BF7394 /* Item+CoreDataProperties.swift */; };
+		AA16166926611BDD00BF7394 /* KeyStore+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165D26611BDD00BF7394 /* KeyStore+CoreDataClass.swift */; };
+		AA16166A26611BDD00BF7394 /* KeyStore+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165E26611BDD00BF7394 /* KeyStore+CoreDataProperties.swift */; };
+		AA16166B26611BDD00BF7394 /* SigningScheme+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16165F26611BDD00BF7394 /* SigningScheme+CoreDataClass.swift */; };
+		AA16166C26611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16166026611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift */; };
+		AA16166D26611BDD00BF7394 /* AppName+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16166126611BDD00BF7394 /* AppName+CoreDataClass.swift */; };
+		AA16166E26611BDD00BF7394 /* AppName+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16166226611BDD00BF7394 /* AppName+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +37,18 @@
 		AA161635266114C800BF7394 /* AppSignerGui.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = AppSignerGui.xcdatamodel; sourceTree = "<group>"; };
 		AA161637266114C800BF7394 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA161638266114C800BF7394 /* AppSignerGui.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppSignerGui.entitlements; sourceTree = "<group>"; };
+		AA16165726611BDD00BF7394 /* PackageName+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageName+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165826611BDD00BF7394 /* PackageName+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PackageName+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165926611BDD00BF7394 /* KeyPass+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyPass+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165A26611BDD00BF7394 /* KeyPass+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyPass+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165B26611BDD00BF7394 /* Item+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165C26611BDD00BF7394 /* Item+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165D26611BDD00BF7394 /* KeyStore+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyStore+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165E26611BDD00BF7394 /* KeyStore+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KeyStore+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		AA16165F26611BDD00BF7394 /* SigningScheme+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SigningScheme+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		AA16166026611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SigningScheme+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		AA16166126611BDD00BF7394 /* AppName+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppName+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		AA16166226611BDD00BF7394 /* AppName+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppName+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +81,7 @@
 		AA161628266114C400BF7394 /* AppSignerGui */ = {
 			isa = PBXGroup;
 			children = (
+				AA16163E266119A500BF7394 /* CoreDataModel */,
 				AA161629266114C400BF7394 /* AppSignerGuiApp.swift */,
 				AA16162B266114C400BF7394 /* ContentView.swift */,
 				AA16162D266114C800BF7394 /* Assets.xcassets */,
@@ -75,6 +100,25 @@
 				AA161630266114C800BF7394 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		AA16163E266119A500BF7394 /* CoreDataModel */ = {
+			isa = PBXGroup;
+			children = (
+				AA16165726611BDD00BF7394 /* PackageName+CoreDataClass.swift */,
+				AA16165826611BDD00BF7394 /* PackageName+CoreDataProperties.swift */,
+				AA16165926611BDD00BF7394 /* KeyPass+CoreDataClass.swift */,
+				AA16165A26611BDD00BF7394 /* KeyPass+CoreDataProperties.swift */,
+				AA16165B26611BDD00BF7394 /* Item+CoreDataClass.swift */,
+				AA16165C26611BDD00BF7394 /* Item+CoreDataProperties.swift */,
+				AA16165D26611BDD00BF7394 /* KeyStore+CoreDataClass.swift */,
+				AA16165E26611BDD00BF7394 /* KeyStore+CoreDataProperties.swift */,
+				AA16165F26611BDD00BF7394 /* SigningScheme+CoreDataClass.swift */,
+				AA16166026611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift */,
+				AA16166126611BDD00BF7394 /* AppName+CoreDataClass.swift */,
+				AA16166226611BDD00BF7394 /* AppName+CoreDataProperties.swift */,
+			);
+			path = CoreDataModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,10 +190,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA16166E26611BDD00BF7394 /* AppName+CoreDataProperties.swift in Sources */,
+				AA16166C26611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift in Sources */,
 				AA161633266114C800BF7394 /* Persistence.swift in Sources */,
+				AA16166326611BDD00BF7394 /* PackageName+CoreDataClass.swift in Sources */,
 				AA16162C266114C400BF7394 /* ContentView.swift in Sources */,
+				AA16166726611BDD00BF7394 /* Item+CoreDataClass.swift in Sources */,
+				AA16166826611BDD00BF7394 /* Item+CoreDataProperties.swift in Sources */,
+				AA16166426611BDD00BF7394 /* PackageName+CoreDataProperties.swift in Sources */,
+				AA16166626611BDD00BF7394 /* KeyPass+CoreDataProperties.swift in Sources */,
 				AA16162A266114C400BF7394 /* AppSignerGuiApp.swift in Sources */,
+				AA16166D26611BDD00BF7394 /* AppName+CoreDataClass.swift in Sources */,
 				AA161636266114C800BF7394 /* AppSignerGui.xcdatamodeld in Sources */,
+				AA16166526611BDD00BF7394 /* KeyPass+CoreDataClass.swift in Sources */,
+				AA16166926611BDD00BF7394 /* KeyStore+CoreDataClass.swift in Sources */,
+				AA16166A26611BDD00BF7394 /* KeyStore+CoreDataProperties.swift in Sources */,
+				AA16166B26611BDD00BF7394 /* SigningScheme+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,10 +333,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AppSignerGui/AppSignerGui.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"AppSignerGui/Preview Content\"";
-				DEVELOPMENT_TEAM = Y2J8L458MW;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AppSignerGui/Info.plist;
@@ -291,6 +347,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.IHUB.AppSignerGui;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -301,10 +358,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AppSignerGui/AppSignerGui.entitlements;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"AppSignerGui/Preview Content\"";
-				DEVELOPMENT_TEAM = Y2J8L458MW;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = AppSignerGui/Info.plist;
@@ -315,6 +372,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.IHUB.AppSignerGui;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
