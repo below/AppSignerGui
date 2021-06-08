@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
@@ -40,8 +41,85 @@ struct ContentView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \SigningScheme.value, ascending: true)],
         animation: .default)
     private var signingSchemes: FetchedResults<SigningScheme>
+    
+    func promptForWorkingDirectoryPermission() -> String? {
+        let openPanel = NSOpenPanel()
+        openPanel.message = "Choose your Apk"
+        openPanel.prompt = "Choose"
+        openPanel.allowedFileTypes = ["apk"]
+        openPanel.allowsOtherFileTypes = false
+        openPanel.canChooseFiles = true
+        openPanel.canChooseDirectories = false
+
+        _ = openPanel.runModal()
+        print(openPanel.urls) // this contains the chosen folder
+        return openPanel.urls.first!.path
+    }
+    
+    func aapt(tool: URL, arguments: [String], completionHandler: @escaping (Int32, Data) -> Void) throws {
+        let group = DispatchGroup()
+        let pipe = Pipe()
+        var standardOutData = Data()
+
+        group.enter()
+        let proc = Process()
+        proc.executableURL = tool
+        proc.arguments = arguments
+        proc.standardOutput = pipe.fileHandleForWriting
+        proc.terminationHandler = { _ in
+            proc.terminationHandler = nil
+            group.leave()
+        }
+
+        group.enter()
+        DispatchQueue.global().async {
+            // Doing long-running synchronous I/O on a global concurrent queue block
+            // is less than ideal, but I’ve convinced myself that it’s acceptable
+            // given the target ‘market’ for this code.
+
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
+            pipe.fileHandleForReading.closeFile()
+            DispatchQueue.main.async {
+                standardOutData = data
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            completionHandler(proc.terminationStatus, standardOutData)
+        }
+
+        try proc.run()
+
+        // We have to close our reference to the write side of the pipe so that the
+        // termination of the child process triggers EOF on the read side.
+
+        pipe.fileHandleForWriting.closeFile()
+    }
+    
+    @State var apkString = "Last working Directory gets here"
 
     var body: some View {
+        
+        VStack {
+            Text("GO")
+                .font(.largeTitle)
+                .padding()
+            HStack {
+                TextField("Message", text: $apkString)
+                    .padding(.leading)
+                Button(action: {
+                                        try! aapt(tool: Bundle.main.url(forResource: "android-11/aapt", withExtension: nil)!, arguments: ["dump", "badging", promptForWorkingDirectoryPermission()!]) { (status, outputData) in
+                                            let output = String(data: outputData, encoding: .utf8) ?? ""
+                                            print("done, status: \(status), output: \(output)")
+                                        }
+                }) {
+                    Text("Sign")
+                }
+                .padding(.trailing)
+        }
+        }.frame(maxWidth: .infinity, maxHeight: .infinity)
+        
             List {
                 ForEach(items) { item in
                     Text("Item at \(item.timestamp!, formatter: itemFormatter)")
