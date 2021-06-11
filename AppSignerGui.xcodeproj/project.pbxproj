@@ -25,6 +25,7 @@
 		AA16166C26611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16166026611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift */; };
 		AA16166D26611BDD00BF7394 /* AppName+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16166126611BDD00BF7394 /* AppName+CoreDataClass.swift */; };
 		AA16166E26611BDD00BF7394 /* AppName+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA16166226611BDD00BF7394 /* AppName+CoreDataProperties.swift */; };
+		AAB166FF26738955005D91EC /* android-11 in Resources */ = {isa = PBXBuildFile; fileRef = AAB166FE26738955005D91EC /* android-11 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +50,7 @@
 		AA16166026611BDD00BF7394 /* SigningScheme+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SigningScheme+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		AA16166126611BDD00BF7394 /* AppName+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppName+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		AA16166226611BDD00BF7394 /* AppName+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppName+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		AAB166FE26738955005D91EC /* android-11 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "android-11"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +91,7 @@
 				AA161637266114C800BF7394 /* Info.plist */,
 				AA161638266114C800BF7394 /* AppSignerGui.entitlements */,
 				AA161634266114C800BF7394 /* AppSignerGui.xcdatamodeld */,
+				AAB166FE26738955005D91EC /* android-11 */,
 				AA16162F266114C800BF7394 /* Preview Content */,
 			);
 			path = AppSignerGui;
@@ -179,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA161631266114C800BF7394 /* Preview Assets.xcassets in Resources */,
+				AAB166FF26738955005D91EC /* android-11 in Resources */,
 				AA16162E266114C800BF7394 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
