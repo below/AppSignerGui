@@ -4,18 +4,13 @@
 //
 //  Created by Axel Schwarz on 28.05.21.
 //
-
+import Foundation
 import SwiftUI
 import CoreData
 
 struct ContentView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \PackageName.package, ascending: true)],
@@ -97,51 +92,108 @@ struct ContentView: View {
         pipe.fileHandleForWriting.closeFile()
     }
     
-    @State var apkString = "Last working Directory gets here"
+    @State var packageName: String = ""
+    @State var appName: String = ""
+    @State var keyStore: String = ""
+    @State var keyPass: String = ""
+    @State var signingScheme: String = ""
 
     var body: some View {
         
         VStack {
-            Text("GO")
+            Text("Select the Apk you want to sign. Then fill in the missing data, after that you can start the signing process.")
                 .font(.largeTitle)
                 .padding()
             HStack {
-                TextField("Message", text: $apkString)
-                    .padding(.leading)
                 Button(action: {
                                         try! aapt(tool: Bundle.main.url(forResource: "android-11/aapt", withExtension: nil)!, arguments: ["dump", "badging", promptForWorkingDirectoryPermission()!]) { (status, outputData) in
                                             let output = String(data: outputData, encoding: .utf8) ?? ""
                                             print("done, status: \(status), output: \(output)")
+                                            
+                                             
+                                            let pattern = #"package: name='(.*?)\'|versionCode='(.*?)\'|versionName='(.*?)\'|W*(application-debuggable)\W*"#
+                                            let regex = try! NSRegularExpression(pattern: pattern)
+                                            let testString = output
+                                            let stringRange = NSRange(location: 0, length: testString.utf16.count)
+                                            let matches = regex.matches(in: testString, range: stringRange)
+                                            var result: [[String]] = []
+                                            for match in matches {
+                                              var groups: [String] = []
+                                              for rangeIndex in 1 ..< match.numberOfRanges {
+                                                let range: NSRange = match.range(at: rangeIndex)
+                                                guard range.location != NSNotFound, range.length != 0 else {
+                                                    continue
+                                                }
+                                                groups.append((testString as NSString).substring(with: match.range(at: rangeIndex)))
+                                              }
+                                              if !groups.isEmpty {
+                                                result.append(groups)
+                                              }
+                                            }
+                                            print("Result: \(result)")
+                                            
+                                            if result.contains(["application-debuggable"]) {
+                                                let packageName = PackageName(context: viewContext)
+                                                packageName.package = result[0].reduce("", +)
+                                                let versionCode = result[1].reduce("", +)
+                                                let versionName = result[2].reduce("", +)
+                                                let debug = result[3].reduce("", +)
+                                                print(packageName, versionCode, versionName, debug)
+                                                
+                                                do {
+                                                    try viewContext.save()
+                                                } catch {
+                                                    // Replace this implementation with code to handle the error appropriately.
+                                                    
+                                                    let nsError = error as NSError
+                                                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                                                }
+                                            }
+                                            else{
+                                                let packageName = PackageName(context: viewContext)
+                                                packageName.package = result[0].reduce("", +)
+                                                let versionCode = result[1].reduce("", +)
+                                                let versionName = result[2].reduce("", +)
+                                                print(packageName, versionCode, versionName)
+                                                
+                                                do {
+                                                    try viewContext.save()
+                                                } catch {
+                                                    // Replace this implementation with code to handle the error appropriately.
+                                                    
+                                                    let nsError = error as NSError
+                                                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                                                }
+                                            }
                                         }
                 }) {
-                    Text("Sign")
+                    Text("Read Apk")
                 }
-                .padding(.trailing)
+                .padding()
+                
+                TextField("packageName", text: $packageName)
+                    .padding()
+                TextField("appName", text: $appName)
+                    .padding()
+                TextField("KeyStore", text: $keyStore)
+                    .padding()
+                TextField("KeyPass", text: $keyPass)
+                    .padding()
+                TextField("SigningScheme", text: $signingScheme)
+                    .padding(.trailing)
+                
+                Button(action: {
+                    
+                }){
+                    Text("Sign Apk")
+                }
+                .padding()
+            }
         }
-        }.frame(maxWidth: .infinity, maxHeight: .infinity)
         
             List {
-                ForEach(items) { item in
-                    Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                        .contextMenu(ContextMenu(menuItems: {
-                            Button(action: {
-                                viewContext.delete(item)
-
-                                do {
-                                    try viewContext.save()
-                                } catch {
-                                    let nsError = error as NSError
-                                    fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                                }
-                            }, label: {
-                                Text("Delete")
-                            })
-                        }))
-                }
-                .onDelete(perform: deleteItems)
-                
                 ForEach(packageNames) { item in
-                    Text("PackageName: \(item.package!)")
+                    Text("PackageNameDatabase: \(item.package!)")
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
                                     viewContext.delete(item)
@@ -160,7 +212,7 @@ struct ContentView: View {
                 .onDelete(perform: deleteItems)
                 
                 ForEach(appNames) { item in
-                    Text("AppName: \(item.name!)")
+                    Text("AppNameDatabase: \(item.name!)")
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
                                     viewContext.delete(item)
@@ -179,7 +231,7 @@ struct ContentView: View {
                 .onDelete(perform: deleteItems)
                 
                 ForEach(keyPasses) { item in
-                    Text("KeyPass: \(item.pass!)")
+                    Text("KeyPassDatabase: \(item.pass!)")
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
                                     viewContext.delete(item)
@@ -198,7 +250,7 @@ struct ContentView: View {
                 .onDelete(perform: deleteItems)
                 
                 ForEach(keyStores) { item in
-                    Text("KeyStore: \(item.link!)")
+                    Text("KeyStoreDatabase: \(item.link!)")
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
                                     viewContext.delete(item)
@@ -217,7 +269,7 @@ struct ContentView: View {
                 .onDelete(perform: deleteItems)
                 
                 ForEach(signingSchemes) { item in
-                    Text("SigningScheme: \(item.value)")
+                    Text("SigningSchemeDatabase: \(item.value)")
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
                                     viewContext.delete(item)
@@ -251,10 +303,6 @@ struct ContentView: View {
         withAnimation {
             let newPackageName = PackageName(context: viewContext)
             newPackageName.package = "newAppApkPackageName"
-            
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-            newItem.packageName = newPackageName
 
             let newAppName = AppName(context: viewContext)
             newAppName.name = "newAppApkAppName"
@@ -286,7 +334,6 @@ struct ContentView: View {
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
             offsets.map { packageNames[$0] }.forEach(viewContext.delete)
             offsets.map { appNames[$0] }.forEach(viewContext.delete)
             offsets.map { keyPasses[$0] }.forEach(viewContext.delete)
