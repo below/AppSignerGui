@@ -13,9 +13,10 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: false)
         let viewContext = result.container.viewContext
-        
+
         do {
             try viewContext.save()
+            viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
         } catch {
             // Replace this implementation with code to handle the error appropriately.
             
