@@ -37,21 +37,46 @@ struct ContentView: View {
         animation: .default)
     private var signingSchemes: FetchedResults<SigningScheme>
     
-    func promptForWorkingDirectoryPermission() -> String? {
+    func promptForWorkingApkPermission() -> String? {
         let openPanel = NSOpenPanel()
         openPanel.message = "Select your Apk"
-        openPanel.prompt = "Select"
+        openPanel.prompt = "Select Apk"
         openPanel.allowedFileTypes = ["apk"]
         openPanel.allowsOtherFileTypes = false
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
+        //openPanel.cancel()
 
         _ = openPanel.runModal()
-        print(openPanel.urls.first!.path)
+        //print(openPanel.urls.first!.path)
         return openPanel.urls.first!.path
     }
     
-    //let savePanel = NSSavePanel()
+    func promptForWorkingDirectoryPermission() -> String? {
+        let openPanel = NSOpenPanel()
+        openPanel.message = "Select your Directory"
+        openPanel.prompt = "Select Directory"
+        openPanel.canChooseFiles = false
+        openPanel.canChooseDirectories = true
+
+        _ = openPanel.runModal()
+        return openPanel.urls.first!.path
+    }
+    
+//    func promptForSavePermissoin () -> String? {
+//        let savePanel = NSSavePanel()
+//        savePanel.message = "Select file to save"
+//        savePanel.prompt = "Save"
+//        savePanel.allowedFileTypes = ["apk"]
+//        savePanel.allowsOtherFileTypes = true
+//        savePanel.canSelectHiddenExtension = true
+//        //savePanel.cancel() =
+//        savePanel.canSelectHiddenExtension = true
+//
+//        _ = savePanel.runModal()
+//        print(savePanel.url!.path)
+//        return savePanel.url!.path
+//    }
     
     func androidTools(tool: URL, arguments: [String], completionHandler: @escaping (Int32, Data) -> Void) throws {
         let group = DispatchGroup()
@@ -96,11 +121,11 @@ struct ContentView: View {
     
     func aaptProcess () {
         
-        let apkDirectory = promptForWorkingDirectoryPermission()!
+        let apkDirectory = promptForWorkingApkPermission()!
         
         try! androidTools(tool: Bundle.main.url(forResource: "android-11/aapt", withExtension: nil)!, arguments: ["dump", "badging", apkDirectory]) { (status, outputData) in
             let output = String(data: outputData, encoding: .utf8) ?? ""
-            print("done, status: \(status), output: \(output)")
+            //print("done, status: \(status), output: \(output)")
              
             let pattern = #"package: name='(.*?)\'|versionCode='(.*?)\'|versionName='(.*?)\'|W*(application-debuggable)\W*"#
             let regex = try! NSRegularExpression(pattern: pattern)
@@ -124,11 +149,20 @@ struct ContentView: View {
             //print("Result: \(result)")
             
             if result.contains(["application-debuggable"]) {
-                // checking database for existing packabgeName in PackageNames
-                // if exist load data with relations data
                 let packageName = PackageName(context: viewContext)
                 packageName.package = result[0].reduce("", +)
                 self.packageName = result[0].reduce("", +)
+                
+                packageNames.forEach { item in
+                    print("was in for loop: \(item)")
+                    if item == packageName {
+                        print("was in if loop")
+                        let appName = AppName(context: viewContext)
+                        appName.packageName = packageName
+                        appName.name = $appName.wrappedValue
+                    }
+                }
+                
                 self.versionCode = result[1].reduce("", +)
                 self.versionName = result[2].reduce("", +)
                 self.debugOption = "debug"
@@ -136,7 +170,7 @@ struct ContentView: View {
                 do {
                     viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
                     try viewContext.save()
-                    print("check change: \(packageName)")
+                    //print("check change: \(packageName)")
                 } catch {
                     // Replace this implementation with code to handle the error appropriately.
                     
@@ -145,9 +179,25 @@ struct ContentView: View {
                 }
             }
             else{
+                // checking database for existing packabgeName in PackageNames
+                // if exist load data with relations data
                 let packageName = PackageName(context: viewContext)
                 packageName.package = result[0].reduce("", +)
                 self.packageName = result[0].reduce("", +)
+                
+                packageNames.forEach { item in
+                    print("was in for loop: \(item)")
+                    print("Is item.package: \(item.package!)")
+                    print("Is self.package: \(packageName)")
+                    if item.package! == self.packageName {
+                        print("was in if loop")
+                        let appName = AppName(context: viewContext)
+                        appName.packageName = packageName
+                        appName.name = $appName.wrappedValue
+                    }
+                }
+                
+                
                 self.versionCode = result[1].reduce("", +)
                 self.versionName = result[2].reduce("", +)
                 self.debugOption = "release"
@@ -163,6 +213,10 @@ struct ContentView: View {
                 }
             }
         }
+    }
+    
+    func signPackageProcess () {
+        
     }
     
     func signApkProcess () {
@@ -195,25 +249,63 @@ struct ContentView: View {
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
         
-        let apkLocation = promptForWorkingDirectoryPermission()!
-        let apkLocationUrl = URL(fileURLWithPath: apkLocation)
-        let apkLocationUrlName = apkLocationUrl.deletingLastPathComponent()
-        let apkLocationString = "\(apkLocationUrlName)"
-        // .appendingPathComponent()
+        let apkLocation = promptForWorkingApkPermission()!
+        let apkLocationUrl = URL(string: apkLocation)
+        let apkLocationUrlName = apkLocationUrl!.deletingLastPathComponent()
+        let apkLocationString = apkLocationUrlName.absoluteString
             
-        let apkNameAligned = "\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue).apk"
-        
-        
+        let apkNameAligned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_aligned.apk"
         
         try! androidTools(tool: Bundle.main.url(forResource: "android-11/zipalign", withExtension: nil)!, arguments: ["-v", "-p", "4", apkLocation, apkNameAligned]) { (status, outputData) in
             let outputZipalign = String(data: outputData, encoding: .utf8) ?? ""
-            print("done, status: \(status), output: \(outputZipalign)")
+            //print("done, status: \(status), output: \(outputZipalign)")
         }
-        print(apkLocation)
 
-        let apkNameAlignedSigned = "\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_aligned_signed.apk"
+        let apkNameAlignedSigned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_aligned_signed.apk"
 
-        try! androidTools(tool: Bundle.main.url(forResource: "android-11/apksigner", withExtension: nil)!, arguments: ["sign", "-v", "--out", apkNameAlignedSigned, "--ks\($keyStore.wrappedValue)", "--ks-pass file:\($keyPass.wrappedValue)", "" ]) { (status, outputData) in
+        let signingSchemeInput = $signingScheme.wrappedValue
+        
+        func signingSchemeBool (signingScheme: Int16) -> (vOne: String, vTwo: String, vThree: String, vFour: String) {
+            switch signingScheme {
+                case 1:
+                    let vOne = "true"
+                    let vTwo = "false"
+                    let vThree = "false"
+                    let vFour = "false"
+                    return(vOne, vTwo, vThree, vFour)
+            
+                case 2:
+                    let vOne = "true"
+                    let vTwo = "true"
+                    let vThree = "false"
+                    let vFour = "false"
+                    return(vOne, vTwo, vThree, vFour)
+                    
+                case 3:
+                    let vOne = "true"
+                    let vTwo = "true"
+                    let vThree = "false"
+                    let vFour = "false"
+                    return(vOne, vTwo, vThree, vFour)
+                    
+                case 4:
+                    let vOne = "true"
+                    let vTwo = "true"
+                    let vThree = "true"
+                    let vFour = "true"
+                    return(vOne, vTwo, vThree, vFour)
+                    
+                default:
+                    print("error")
+            }
+            return("false", "false", "false", "false")
+        }
+
+        let schemeAll = signingSchemeBool(signingScheme: signingSchemeInput)
+        let keyPassCommand = "\(apkLocationString)\($keyPass.wrappedValue)"
+        let keyStoreCommand = "\(apkLocationString)\($keyStore.wrappedValue)"
+
+        try! androidTools(tool: Bundle.main.url(forResource: "android-11/apksigner", withExtension: nil)!, arguments: ["sign", "-v", "--out", apkNameAlignedSigned, "--ks", keyStoreCommand, "--ks-pass", "file:\(keyPassCommand)", "--v1-signing-enabled", schemeAll.vOne, "--v2-signing-enabled", schemeAll.vTwo, "--v3-signing-enabled", schemeAll.vThree, "--v4-signing-enabled", schemeAll.vFour, apkNameAligned]) { (status, outputData) in
             let outputApksigner = String(data: outputData, encoding: .utf8) ?? ""
             print("done, status: \(status), output: \(outputApksigner)")
         }
@@ -227,9 +319,6 @@ struct ContentView: View {
     @State var isOn: Bool = true
     
     @State var signingScheme: Int16 = 1
-    
-    //@State var apkLocation: String = "/Users/a11952633/Desktop/Park_and_Joy_V2.9.10_130-release-unsigned.apk"
-    
     
     @State var versionCode: String = ""
     @State var versionName: String = ""
@@ -281,6 +370,10 @@ struct ContentView: View {
                     Text("Sign Apk")
                 }
                 .padding()
+                Button(action: self.signPackageProcess)
+                {
+                    Text("Sign Package")
+                }
             }
         }
         
