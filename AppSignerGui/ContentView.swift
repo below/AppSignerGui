@@ -52,6 +52,21 @@ struct ContentView: View {
         return openPanel.urls.first!.path
     }
     
+    func promptForWorkingAabPermission() -> String? {
+        let openPanel = NSOpenPanel()
+        openPanel.message = "Select your Aab"
+        openPanel.prompt = "Select Aab"
+        openPanel.allowedFileTypes = ["aab"]
+        openPanel.allowsOtherFileTypes = false
+        openPanel.canChooseFiles = true
+        openPanel.canChooseDirectories = false
+        //openPanel.cancel()
+
+        _ = openPanel.runModal()
+        //print(openPanel.urls.first!.path)
+        return openPanel.urls.first!.path
+    }
+    
     func promptForWorkingDirectoryPermission() -> String? {
         let openPanel = NSOpenPanel()
         openPanel.message = "Select your Directory"
@@ -191,12 +206,10 @@ struct ContentView: View {
                     print("Is self.package: \(packageName)")
                     if item.package! == self.packageName {
                         print("was in if loop")
-                        let appName = AppName(context: viewContext)
-                        appName.packageName = packageName
-                        appName.name = $appName.wrappedValue
+                        
+                        
                     }
                 }
-                
                 
                 self.versionCode = result[1].reduce("", +)
                 self.versionName = result[2].reduce("", +)
@@ -216,7 +229,56 @@ struct ContentView: View {
     }
     
     func signPackageProcess () {
+        let packageName = PackageName(context: viewContext)
+        packageName.package = $packageName.wrappedValue
         
+        let appName = AppName(context: viewContext)
+        appName.name = $appName.wrappedValue
+        appName.packageName = packageName
+
+        let keyStore = KeyStore(context: viewContext)
+        keyStore.link = $keyStore.wrappedValue
+        keyStore.packageName = packageName
+        
+        let keyPass = KeyPass(context: viewContext)
+        keyPass.pass = $keyPass.wrappedValue
+        keyPass.packageName = packageName
+
+        let signingScheme = SigningScheme(context: viewContext)
+        signingScheme.value = $signingScheme.wrappedValue
+        signingScheme.packageName = packageName
+
+        do {
+            viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+            try viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+        
+        let apkLocation = promptForWorkingAabPermission()!
+        let apkLocationUrl = URL(string: apkLocation)
+        let apkLocationUrlName = apkLocationUrl!.deletingLastPathComponent()
+        let apkLocationString = apkLocationUrlName.absoluteString
+            
+        let apkNameSigned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_signed.aab"
+        
+        let keyPassCommand = "\(apkLocationString)\($keyPass.wrappedValue)"
+        let keyStoreCommand = "\(apkLocationString)\($keyStore.wrappedValue)"
+        
+        try! androidTools(tool: URL(fileURLWithPath: "/usr/bin/jarsigner", relativeTo: nil), arguments: ["-verbose", "-sigalg", "SHA256withRSA", "-digestalg", "SHA-256", "-keystore", keyStoreCommand, "-storepass", "file:\(keyPassCommand)", apkNameSigned, "magenta?"]) { (status, outputData) in
+            let outputJarsigner = String(data: outputData, encoding: .utf8) ?? ""
+            print("done, status: \(status), output: \(outputJarsigner)")
+        }
+        
+        let apkNameAlignedSigned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_aligned_signed.aab"
+        
+        try! androidTools(tool: Bundle.main.url(forResource: "android-11/zipalign", withExtension: nil)!, arguments: ["-v", "4", apkNameSigned, apkNameAlignedSigned]) { (status, outputData) in
+            let outputZipalign = String(data: outputData, encoding: .utf8) ?? ""
+            print("done, status: \(status), output: \(outputZipalign)")
+        }
     }
     
     func signApkProcess () {
@@ -364,16 +426,18 @@ struct ContentView: View {
                     .padding([.horizontal], 200)
                     .multilineTextAlignment(.center)
                 
-                
-                Button(action: self.signApkProcess)
-                {
-                    Text("Sign Apk")
-                }
-                .padding()
-                
-                Button(action: self.signPackageProcess)
-                {
-                    Text("Sign Package")
+                HStack{
+                    Button(action: self.signApkProcess)
+                    {
+                        Text("Sign Apk")
+                    }
+                    .padding()
+                    
+                    Button(action: self.signPackageProcess)
+                    {
+                        Text("Sign Package")
+                    }
+                    .padding()
                 }
             }
         }

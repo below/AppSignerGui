@@ -14,8 +14,8 @@
             filePath = "AppSignerGui/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "525"
-            endingLineNumber = "525"
+            startingLineNumber = "589"
+            endingLineNumber = "589"
             landmarkName = "deleteItems(offsets:)"
             landmarkType = "7">
             <Locations>
@@ -77,8 +77,8 @@
             filePath = "AppSignerGui/ContentView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "524"
-            endingLineNumber = "524"
+            startingLineNumber = "588"
+            endingLineNumber = "588"
             landmarkName = "deleteItems(offsets:)"
             landmarkType = "7">
             <Locations>
