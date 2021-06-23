@@ -370,6 +370,7 @@ struct ContentView: View {
                     Text("Sign Apk")
                 }
                 .padding()
+                
                 Button(action: self.signPackageProcess)
                 {
                     Text("Sign Package")
