@@ -228,6 +228,16 @@ struct ContentView: View {
         }
     }
     
+    func aaptTwoProcess () {
+        let aabDirectory = promptForWorkingAabPermission()!
+        
+        try! androidTools(tool: Bundle.main.url(forResource: "android-11/aapt2", withExtension: nil)!, arguments: ["dump", "badging", aabDirectory]) { (status, outputData) in
+            let output = String(data: outputData, encoding: .utf8) ?? ""
+            print("done, status: \(status), output: \(output)")
+            
+        }
+    }
+    
     func signPackageProcess () {
         let packageName = PackageName(context: viewContext)
         packageName.package = $packageName.wrappedValue
@@ -262,13 +272,14 @@ struct ContentView: View {
         let apkLocationUrl = URL(string: apkLocation)
         let apkLocationUrlName = apkLocationUrl!.deletingLastPathComponent()
         let apkLocationString = apkLocationUrlName.absoluteString
-            
+        
+        // input file wird durch den ouput ersetzt
         let apkNameSigned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_signed.aab"
         
         let keyPassCommand = "\(apkLocationString)\($keyPass.wrappedValue)"
         let keyStoreCommand = "\(apkLocationString)\($keyStore.wrappedValue)"
         
-        try! androidTools(tool: URL(fileURLWithPath: "/usr/bin/jarsigner", relativeTo: nil), arguments: ["-verbose", "-sigalg", "SHA256withRSA", "-digestalg", "SHA-256", "-keystore", keyStoreCommand, "-storepass", "file:\(keyPassCommand)", apkNameSigned, "magenta?"]) { (status, outputData) in
+        try! androidTools(tool: URL(fileURLWithPath: "/usr/bin/jarsigner", relativeTo: nil), arguments: ["-verbose", "-sigalg", "SHA256withRSA", "-digestalg", "SHA1", "-keystore", keyStoreCommand, "-storepass", "file:\(keyPassCommand)", apkNameSigned, "alias var"]) { (status, outputData) in
             let outputJarsigner = String(data: outputData, encoding: .utf8) ?? ""
             print("done, status: \(status), output: \(outputJarsigner)")
         }
@@ -396,11 +407,18 @@ struct ContentView: View {
                 .font(.largeTitle)
                 .padding()
             VStack(alignment: .center, spacing: 10) {
-                Button(action: self.aaptProcess)
-                {
-                    Text("Read Apk")
+                HStack{
+                    Button(action: self.aaptProcess)
+                    {
+                        Text("Read Apk")
+                    }
+                    .padding()
+                    Button(action: self.aaptTwoProcess)
+                    {
+                        Text("Read Aab")
+                    }
+                    .padding()
                 }
-                .padding()
                 Text($packageName.wrappedValue)
                     .padding([.horizontal], 200)
                     .multilineTextAlignment(.center)
@@ -435,7 +453,7 @@ struct ContentView: View {
                     
                     Button(action: self.signPackageProcess)
                     {
-                        Text("Sign Package")
+                        Text("Sign Aab")
                     }
                     .padding()
                 }
