@@ -92,6 +92,15 @@ struct ContentView: View {
     
     func aaptProcess () {
         
+        do {
+            viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            try viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+        
         let apkDirectory = promptForWorkingApkPermission()!
         
         try! androidTools(tool: Bundle.main.url(forResource: "android-11/aapt", withExtension: nil)!, arguments: ["dump", "badging", apkDirectory]) { (status, outputData) in
@@ -131,6 +140,12 @@ struct ContentView: View {
                         $appName.wrappedValue = item.name!
                         $keyPass.wrappedValue = item.pass!
                         $signingScheme.wrappedValue = item.value
+                    }
+                    else {
+                        $keyStore.wrappedValue = ""
+                        $appName.wrappedValue = ""
+                        $keyPass.wrappedValue = ""
+                        $signingScheme.wrappedValue = 1
                     }
                 }
                 
@@ -233,6 +248,16 @@ struct ContentView: View {
     }
     
     func signApkProcess () {
+        
+        do {
+            viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            try viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+        
         let packageName = PackageName(context: viewContext)
         packageName.package = $packageName.wrappedValue
         packageName.name = $appName.wrappedValue
@@ -506,66 +531,54 @@ struct ContentView: View {
                 EditButton()
                 #endif
 
-                Button(action: addItem) {
-                    Label("Add Item", systemImage: "plus")
-                }
-                Button(action: minusItem) {
-                    Label("Add another Item", systemImage: "minus")
-                }
+//                Button(action: addItem) {
+//                    Label("Add Item", systemImage: "plus")
+//                }
+//                Button(action: minusItem) {
+//                    Label("Add another Item", systemImage: "minus")
+//                }
             }
         }
     
-    private func minusItem() {
-        withAnimation {
-            let newPackageName = PackageName(context: viewContext)
-            newPackageName.package = "newAppApkPackageName"
-            newPackageName.name = "newAppApkAppName"
-            newPackageName.pass = "secret"
-            newPackageName.link = "/user/Desktop"
-            newPackageName.value = 2
-            
-            
-            do {
-                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            
-            let newPackageName = PackageName(context: viewContext)
-            newPackageName.package = "newAppApkPackageName"
+//    private func minusItem() {
+//        withAnimation {
+//            let newPackageName = PackageName(context: viewContext)
+//            newPackageName.package = "newAppApkPackageName"
 //            newPackageName.name = "newAppApkAppName"
 //            newPackageName.pass = "secret"
 //            newPackageName.link = "/user/Desktop"
 //            newPackageName.value = 2
-            
-//            let anotherPackageName = PackageName(context: viewContext)
-//            anotherPackageName.package = "anotherOne"
-//            anotherPackageName.name = "anotherName"
-//            anotherPackageName.pass = "anotherSecret"
-//            anotherPackageName.link = "/user/Desktop"
-//            anotherPackageName.value = 2
+//
+//
+//            do {
+//                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+//                try viewContext.save()
+//            } catch {
+//                // Replace this implementation with code to handle the error appropriately.
+//
+//                let nsError = error as NSError
+//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+//            }
+//        }
+//    }
 
-            
-            do {
-                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
+//    private func addItem() {
+//        withAnimation {
+//
+//            let newPackageName = PackageName(context: viewContext)
+//            newPackageName.package = "newAppApkPackageName"
+//
+//            do {
+//                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+//                try viewContext.save()
+//            } catch {
+//                // Replace this implementation with code to handle the error appropriately.
+//
+//                let nsError = error as NSError
+//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+//            }
+//        }
+//    }
 
 
     private func deleteItems(offsets: IndexSet) {
