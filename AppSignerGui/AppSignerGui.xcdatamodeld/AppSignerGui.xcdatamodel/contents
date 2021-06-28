@@ -1,58 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20F71" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="AppName" representedClassName="AppName" syncable="YES">
-        <attribute name="name" attributeType="String"/>
-        <relationship name="packageName" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PackageName" inverseName="appName" inverseEntity="PackageName"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="name"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
-    <entity name="KeyPass" representedClassName="KeyPass" syncable="YES">
-        <attribute name="pass" attributeType="String"/>
-        <relationship name="packageName" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PackageName" inverseName="keyPass" inverseEntity="PackageName"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="pass"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
-    <entity name="KeyStore" representedClassName="KeyStore" syncable="YES">
-        <attribute name="link" attributeType="String"/>
-        <relationship name="packageName" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PackageName" inverseName="keyStore" inverseEntity="PackageName"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="link"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
-    <entity name="PackageName" representedClassName="PackageName" syncable="YES">
-        <attribute name="package" attributeType="String"/>
-        <relationship name="appName" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AppName" inverseName="packageName" inverseEntity="AppName"/>
-        <relationship name="keyPass" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="KeyPass" inverseName="packageName" inverseEntity="KeyPass"/>
-        <relationship name="keyStore" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="KeyStore" inverseName="packageName" inverseEntity="KeyStore"/>
-        <relationship name="signingScheme" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SigningScheme" inverseName="packageName" inverseEntity="SigningScheme"/>
+    <entity name="PackageName" representedClassName="PackageName" syncable="YES" codeGenerationType="class">
+        <attribute name="link" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="package" optional="YES" attributeType="String"/>
+        <attribute name="pass" optional="YES" attributeType="String"/>
+        <attribute name="value" attributeType="Integer 16" minValueString="1" maxValueString="4" defaultValueString="1" usesScalarValueType="YES"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="package"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="SigningScheme" representedClassName="SigningScheme" syncable="YES">
-        <attribute name="value" attributeType="Integer 16" minValueString="1" maxValueString="4" defaultValueString="1" usesScalarValueType="YES"/>
-        <relationship name="packageName" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PackageName" inverseName="signingScheme" inverseEntity="PackageName"/>
-        <uniquenessConstraints>
-            <uniquenessConstraint>
-                <constraint value="value"/>
-            </uniquenessConstraint>
-        </uniquenessConstraints>
-    </entity>
     <elements>
-        <element name="AppName" positionX="-43.251708984375" positionY="-47.48110961914062" width="128" height="59"/>
-        <element name="KeyPass" positionX="48.2747802734375" positionY="77.44061279296875" width="128" height="59"/>
-        <element name="KeyStore" positionX="15.2396240234375" positionY="228.19287109375" width="128" height="59"/>
-        <element name="PackageName" positionX="-324.8397827148438" positionY="28.00640869140625" width="128" height="104"/>
-        <element name="SigningScheme" positionX="-307.5180053710938" positionY="-152.5649108886719" width="128" height="59"/>
+        <element name="PackageName" positionX="-170.3375854492188" positionY="-512.5354919433594" width="128" height="104"/>
     </elements>
 </model>

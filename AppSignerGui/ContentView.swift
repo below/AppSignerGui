@@ -1,9 +1,3 @@
-//
-//  ContentView.swift
-//  AppSignerGui
-//
-//  Created by Axel Schwarz on 28.05.21.
-//
 import Foundation
 import SwiftUI
 import CoreData
@@ -17,26 +11,6 @@ struct ContentView: View {
         animation: .default)
     private var packageNames: FetchedResults<PackageName>
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \AppName.name, ascending: true)],
-        animation: .default)
-    private var appNames: FetchedResults<AppName>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \KeyPass.pass, ascending: true)],
-        animation: .default)
-    private var keyPasses: FetchedResults<KeyPass>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \KeyStore.link, ascending: true)],
-        animation: .default)
-    private var keyStores: FetchedResults<KeyStore>
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \SigningScheme.value, ascending: true)],
-        animation: .default)
-    private var signingSchemes: FetchedResults<SigningScheme>
-    
     func promptForWorkingApkPermission() -> String? {
         let openPanel = NSOpenPanel()
         openPanel.message = "Select your Apk"
@@ -45,10 +19,8 @@ struct ContentView: View {
         openPanel.allowsOtherFileTypes = false
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
-        //openPanel.cancel()
-
+       
         _ = openPanel.runModal()
-        //print(openPanel.urls.first!.path)
         return openPanel.urls.first!.path
     }
     
@@ -60,10 +32,8 @@ struct ContentView: View {
         openPanel.allowsOtherFileTypes = false
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
-        //openPanel.cancel()
 
         _ = openPanel.runModal()
-        //print(openPanel.urls.first!.path)
         return openPanel.urls.first!.path
     }
     
@@ -77,21 +47,7 @@ struct ContentView: View {
         _ = openPanel.runModal()
         return openPanel.urls.first!.path
     }
-    
-//    func promptForSavePermissoin () -> String? {
-//        let savePanel = NSSavePanel()
-//        savePanel.message = "Select file to save"
-//        savePanel.prompt = "Save"
-//        savePanel.allowedFileTypes = ["apk"]
-//        savePanel.allowsOtherFileTypes = true
-//        savePanel.canSelectHiddenExtension = true
-//        //savePanel.cancel() =
-//        savePanel.canSelectHiddenExtension = true
-//
-//        _ = savePanel.runModal()
-//        print(savePanel.url!.path)
-//        return savePanel.url!.path
-//    }
+
     
     func androidTools(tool: URL, arguments: [String], completionHandler: @escaping (Int32, Data) -> Void) throws {
         let group = DispatchGroup()
@@ -140,7 +96,6 @@ struct ContentView: View {
         
         try! androidTools(tool: Bundle.main.url(forResource: "android-11/aapt", withExtension: nil)!, arguments: ["dump", "badging", apkDirectory]) { (status, outputData) in
             let output = String(data: outputData, encoding: .utf8) ?? ""
-            //print("done, status: \(status), output: \(output)")
              
             let pattern = #"package: name='(.*?)\'|versionCode='(.*?)\'|versionName='(.*?)\'|W*(application-debuggable)\W*"#
             let regex = try! NSRegularExpression(pattern: pattern)
@@ -161,20 +116,21 @@ struct ContentView: View {
                 result.append(groups)
               }
             }
-            //print("Result: \(result)")
             
             if result.contains(["application-debuggable"]) {
-                let packageName = PackageName(context: viewContext)
-                packageName.package = result[0].reduce("", +)
+                
                 self.packageName = result[0].reduce("", +)
                 
                 packageNames.forEach { item in
                     print("was in for loop: \(item)")
-                    if item == packageName {
+
+                    print("Is self.package: \(packageName)")
+                    if item.package == self.packageName {
                         print("was in if loop")
-                        let appName = AppName(context: viewContext)
-                        appName.packageName = packageName
-                        appName.name = $appName.wrappedValue
+                        $keyStore.wrappedValue = item.link!
+                        $appName.wrappedValue = item.name!
+                        $keyPass.wrappedValue = item.pass!
+                        $signingScheme.wrappedValue = item.value
                     }
                 }
                 
@@ -183,7 +139,7 @@ struct ContentView: View {
                 self.debugOption = "debug"
                 
                 do {
-                    viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+                    viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
                     try viewContext.save()
                     //print("check change: \(packageName)")
                 } catch {
@@ -194,20 +150,19 @@ struct ContentView: View {
                 }
             }
             else{
-                // checking database for existing packabgeName in PackageNames
-                // if exist load data with relations data
-                let packageName = PackageName(context: viewContext)
-                packageName.package = result[0].reduce("", +)
+                
                 self.packageName = result[0].reduce("", +)
                 
                 packageNames.forEach { item in
                     print("was in for loop: \(item)")
-                    print("Is item.package: \(item.package!)")
+
                     print("Is self.package: \(packageName)")
-                    if item.package! == self.packageName {
+                    if item.package == self.packageName {
                         print("was in if loop")
-                        
-                        
+                        $keyStore.wrappedValue = item.link!
+                        $appName.wrappedValue = item.name!
+                        $keyPass.wrappedValue = item.pass!
+                        $signingScheme.wrappedValue = item.value
                     }
                 }
                 
@@ -216,7 +171,7 @@ struct ContentView: View {
                 self.debugOption = "release"
                 
                 do {
-                    viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+                    viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
                     try viewContext.save()
                 } catch {
                     // Replace this implementation with code to handle the error appropriately.
@@ -242,24 +197,9 @@ struct ContentView: View {
         let packageName = PackageName(context: viewContext)
         packageName.package = $packageName.wrappedValue
         
-        let appName = AppName(context: viewContext)
-        appName.name = $appName.wrappedValue
-        appName.packageName = packageName
-
-        let keyStore = KeyStore(context: viewContext)
-        keyStore.link = $keyStore.wrappedValue
-        keyStore.packageName = packageName
-        
-        let keyPass = KeyPass(context: viewContext)
-        keyPass.pass = $keyPass.wrappedValue
-        keyPass.packageName = packageName
-
-        let signingScheme = SigningScheme(context: viewContext)
-        signingScheme.value = $signingScheme.wrappedValue
-        signingScheme.packageName = packageName
 
         do {
-            viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+            viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             try viewContext.save()
         } catch {
             // Replace this implementation with code to handle the error appropriately.
@@ -295,25 +235,13 @@ struct ContentView: View {
     func signApkProcess () {
         let packageName = PackageName(context: viewContext)
         packageName.package = $packageName.wrappedValue
-        
-        let appName = AppName(context: viewContext)
-        appName.name = $appName.wrappedValue
-        appName.packageName = packageName
-
-        let keyStore = KeyStore(context: viewContext)
-        keyStore.link = $keyStore.wrappedValue
-        keyStore.packageName = packageName
-        
-        let keyPass = KeyPass(context: viewContext)
-        keyPass.pass = $keyPass.wrappedValue
-        keyPass.packageName = packageName
-
-        let signingScheme = SigningScheme(context: viewContext)
-        signingScheme.value = $signingScheme.wrappedValue
-        signingScheme.packageName = packageName
+        packageName.name = $appName.wrappedValue
+        packageName.link = $keyStore.wrappedValue
+        packageName.pass = $keyPass.wrappedValue
+        packageName.value = $signingScheme.wrappedValue
 
         do {
-            viewContext.mergePolicy = NSMergeByPropertyStoreTrumpMergePolicy
+            viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             try viewContext.save()
         } catch {
             // Replace this implementation with code to handle the error appropriately.
@@ -398,9 +326,6 @@ struct ContentView: View {
     @State var debugOption: String = ""
 
     var body: some View {
-                
-//        Toggle("My Checkbox Title", isOn: $isOn)
-//               .padding()
         
         VStack {
             Text("Select the Apk and fill in the missing data, after that start the signing process.")
@@ -459,10 +384,11 @@ struct ContentView: View {
                 }
             }
         }
-        
+                    
             List {
+                
                 ForEach(packageNames) { item in
-                    Text("PackageNameDatabase: \(item.package!)")
+                    Text("AllPackageNameDatabase: \(item)")
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
                                     viewContext.delete(item)
@@ -480,69 +406,88 @@ struct ContentView: View {
                 }
                 .onDelete(perform: deleteItems)
                 
-                ForEach(appNames) { item in
-                    Text("AppNameDatabase: \(item.name!)")
-                        .contextMenu(ContextMenu(menuItems: {
-                            Button(action: {
-                                    viewContext.delete(item)
-                            
-                            do {
-                                try viewContext.save()
-                            } catch {
-                                let nsError = error as NSError
-                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                                }
-                            } , label: {
-                                Text("Delete")
-                            })
-                        }))
-                }
-                .onDelete(perform: deleteItems)
+//                ForEach(packageNames) { item in
+//                    Text("PackageNameDatabase: \(item.package!)")
+//                        .contextMenu(ContextMenu(menuItems: {
+//                            Button(action: {
+//                                    viewContext.delete(item)
+//
+//                            do {
+//                                try viewContext.save()
+//                            } catch {
+//                                let nsError = error as NSError
+//                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+//                                }
+//                            } , label: {
+//                                Text("Delete")
+//                            })
+//                        }))
+//                }
+//                .onDelete(perform: deleteItems)
+//
+//                ForEach(packageNames) { item in
+//                    Text("AppNameDatabase: \(item.name!)")
+//                        .contextMenu(ContextMenu(menuItems: {
+//                            Button(action: {
+//                                    viewContext.delete(item)
+//
+//                            do {
+//                                try viewContext.save()
+//                            } catch {
+//                                let nsError = error as NSError
+//                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+//                                }
+//                            } , label: {
+//                                Text("Delete")
+//                            })
+//                        }))
+//                }
+//                .onDelete(perform: deleteItems)
+//
+//                ForEach(packageNames) { item in
+//                    Text("KeyPassDatabase: \(item.pass!)")
+//                        .contextMenu(ContextMenu(menuItems: {
+//                            Button(action: {
+//                                    viewContext.delete(item)
+//
+//                            do {
+//                                try viewContext.save()
+//                            } catch {
+//                                let nsError = error as NSError
+//                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+//                                }
+//                            } , label: {
+//                                Text("Delete")
+//                            })
+//                        }))
+//                }
+//                .onDelete(perform: deleteItems)
+//
+//                ForEach(packageNames) { item in
+//                    Text("KeyStoreDatabase: \(item.link!)")
+//                        .contextMenu(ContextMenu(menuItems: {
+//                            Button(action: {
+//                                    viewContext.delete(item)
+//
+//                            do {
+//                                try viewContext.save()
+//                            } catch {
+//                                let nsError = error as NSError
+//                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+//                                }
+//                            } , label: {
+//                                Text("Delete")
+//                            })
+//                        }))
+//                }
+//                .onDelete(perform: deleteItems)
                 
-                ForEach(keyPasses) { item in
-                    Text("KeyPassDatabase: \(item.pass!)")
-                        .contextMenu(ContextMenu(menuItems: {
-                            Button(action: {
-                                    viewContext.delete(item)
-                            
-                            do {
-                                try viewContext.save()
-                            } catch {
-                                let nsError = error as NSError
-                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                                }
-                            } , label: {
-                                Text("Delete")
-                            })
-                        }))
-                }
-                .onDelete(perform: deleteItems)
-                
-                ForEach(keyStores) { item in
-                    Text("KeyStoreDatabase: \(item.link!)")
-                        .contextMenu(ContextMenu(menuItems: {
-                            Button(action: {
-                                    viewContext.delete(item)
-                            
-                            do {
-                                try viewContext.save()
-                            } catch {
-                                let nsError = error as NSError
-                                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-                                }
-                            } , label: {
-                                Text("Delete")
-                            })
-                        }))
-                }
-                .onDelete(perform: deleteItems)
-                
-                ForEach(signingSchemes) { item in
+                ForEach(packageNames) { item in
                     Text("SigningSchemeDatabase: \(item.value)")
                         .contextMenu(ContextMenu(menuItems: {
                             Button(action: {
                                     viewContext.delete(item)
-                            
+
                             do {
                                 try viewContext.save()
                             } catch {
@@ -555,60 +500,81 @@ struct ContentView: View {
                         }))
                 }
                 .onDelete(perform: deleteItems)
-                
             }
             .toolbar {
                 #if os(iOS)
                 EditButton()
                 #endif
 
-//                Button(action: addItem) {
-//                    Label("Add Item", systemImage: "plus")
-//                }
+                Button(action: addItem) {
+                    Label("Add Item", systemImage: "plus")
+                }
+                Button(action: minusItem) {
+                    Label("Add another Item", systemImage: "minus")
+                }
             }
         }
-//
-//    private func addItem() {
-//        withAnimation {
-//            let newPackageName = PackageName(context: viewContext)
-//            newPackageName.package = "newAppApkPackageName"
-//
-//            let newAppName = AppName(context: viewContext)
-//            newAppName.name = "newAppApkAppName"
-//            newAppName.packageName = newPackageName
-//
-//            let newKeyPass = KeyPass(context: viewContext)
-//            newKeyPass.pass = "secret"
-//            newKeyPass.packageName = newPackageName
-//
-//            let newKeyStore = KeyStore(context: viewContext)
-//            newKeyStore.link = "/user/Desktop"
-//            newKeyStore.packageName = newPackageName
-//
-//            let newSigningScheme = SigningScheme(context: viewContext)
-//            newSigningScheme.value = 2
-//            newSigningScheme.packageName = newPackageName
-//
-//            do {
-//                try viewContext.save()
-//                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-//            } catch {
-//                // Replace this implementation with code to handle the error appropriately.
-//
-//                let nsError = error as NSError
-//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//            }
-//        }
-//    }
+    
+    private func minusItem() {
+        withAnimation {
+            let newPackageName = PackageName(context: viewContext)
+            newPackageName.package = "newAppApkPackageName"
+            newPackageName.name = "newAppApkAppName"
+            newPackageName.pass = "secret"
+            newPackageName.link = "/user/Desktop"
+            newPackageName.value = 2
+            
+            
+            do {
+                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
+
+    private func addItem() {
+        withAnimation {
+            
+            let newPackageName = PackageName(context: viewContext)
+            newPackageName.package = "newAppApkPackageName"
+//            newPackageName.name = "newAppApkAppName"
+//            newPackageName.pass = "secret"
+//            newPackageName.link = "/user/Desktop"
+//            newPackageName.value = 2
+            
+//            let anotherPackageName = PackageName(context: viewContext)
+//            anotherPackageName.package = "anotherOne"
+//            anotherPackageName.name = "anotherName"
+//            anotherPackageName.pass = "anotherSecret"
+//            anotherPackageName.link = "/user/Desktop"
+//            anotherPackageName.value = 2
+
+            
+            do {
+                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+                try viewContext.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+
+                let nsError = error as NSError
+                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+            }
+        }
+    }
 
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             offsets.map { packageNames[$0] }.forEach(viewContext.delete)
-            offsets.map { appNames[$0] }.forEach(viewContext.delete)
-            offsets.map { keyPasses[$0] }.forEach(viewContext.delete)
-            offsets.map { keyStores[$0] }.forEach(viewContext.delete)
-            offsets.map { signingSchemes[$0] }.forEach(viewContext.delete)
+//            offsets.map { appNames[$0] }.forEach(viewContext.delete)
+//            offsets.map { keyPasses[$0] }.forEach(viewContext.delete)
+//            offsets.map { keyStores[$0] }.forEach(viewContext.delete)
+//            offsets.map { signingSchemes[$0] }.forEach(viewContext.delete)
             
             do {
                 try viewContext.save()
