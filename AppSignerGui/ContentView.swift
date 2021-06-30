@@ -294,9 +294,14 @@ struct ContentView: View {
         }
         
         let apkLocation = promptForWorkingApkPermission()!
-        let apkLocationUrl = URL(string: apkLocation)
-        let apkLocationUrlName = apkLocationUrl!.deletingLastPathComponent()
-        let apkLocationString = apkLocationUrlName.absoluteString
+        let apkLocationUrl = URL(fileURLWithPath: apkLocation)
+        //let apkLocationUrl = URL(string: apkLocation)
+        //print("apkLocationUrl:\(apkLocationUrl)")
+        let apkLocationUrlName = apkLocationUrl.deletingLastPathComponent()
+        //print("apkLocationUrlName:\(apkLocationUrlName)")
+        let apkLocationString = apkLocationUrlName.path
+        //let apkLocationString = apkLocationUrlName.absoluteString
+        //print("apkLocationString:\(apkLocationString)")
             
         let apkNameAligned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_aligned.apk"
         
@@ -328,7 +333,7 @@ struct ContentView: View {
                 case 3:
                     let vOne = "true"
                     let vTwo = "true"
-                    let vThree = "false"
+                    let vThree = "true"
                     let vFour = "false"
                     return(vOne, vTwo, vThree, vFour)
                     
@@ -346,17 +351,18 @@ struct ContentView: View {
         }
 
         let schemeAll = signingSchemeBool(signingScheme: signingSchemeInput)
-        let keyPassCommand = "\(apkLocationString)\($keyPass.wrappedValue)"
-        let keyStoreCommand = "\(apkLocationString)\($keyStore.wrappedValue)"
+        let keyPassCommand = "\(apkLocationString)/\($keyPass.wrappedValue)"
+        let keyStoreCommand = "\(apkLocationString)/\($keyStore.wrappedValue)"
 
         try! androidTools(tool: Bundle.main.url(forResource: "android-11/apksigner", withExtension: nil)!, arguments: ["sign", "-v", "--out", apkNameAlignedSigned, "--ks", keyStoreCommand, "--ks-pass", "file:\(keyPassCommand)", "--v1-signing-enabled", schemeAll.vOne, "--v2-signing-enabled", schemeAll.vTwo, "--v3-signing-enabled", schemeAll.vThree, "--v4-signing-enabled", schemeAll.vFour, apkNameAligned]) { (status, outputData) in
             let outputApksigner = String(data: outputData, encoding: .utf8) ?? ""
             print("Apk: \(outputApksigner)")
+            $outputSign.wrappedValue = outputApksigner
         }
-        
         try! androidTools(tool: Bundle.main.url(forResource: "android-11/apksigner", withExtension: nil)!, arguments: ["verify", "--verbose", "--print-certs", apkNameAlignedSigned]) { (status, outputData) in
             let outputApksignerVerify = String(data: outputData, encoding: .utf8) ?? ""
             print("Verify: \(outputApksignerVerify)")
+            $outputVerify.wrappedValue = outputApksignerVerify
         }
     }
     
@@ -385,7 +391,8 @@ struct ContentView: View {
     @State var versionName: String = ""
     @State var debugOption: String = ""
     
-    @State var outputSigningProcess = ""
+    @State var outputVerify = ""
+    @State var outputSign = ""
     
     var body: some View {
         
@@ -448,9 +455,17 @@ struct ContentView: View {
         }
             
         VStack {
-            
-            Text("outputZipalign and outputApksigner").multilineTextAlignment(.center)
-            
+            GeometryReader { geometry in
+            ScrollView {
+                //TextEditor(text: $outputVerify)
+            Text($outputVerify.wrappedValue)
+                    .lineLimit(nil)
+                    .frame(width: geometry.size.width)
+                    .background(Color.red)
+                //Text(outputSign)
+                }
+            .background(Color.green)
+            }
             List {
                 
                 ForEach(packageNames) { item in
