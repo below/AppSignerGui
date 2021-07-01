@@ -305,12 +305,14 @@ struct ContentView: View {
             
         let apkNameAligned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_aligned.apk"
         
+        // if status 1 zipalign again
         try! androidTools(tool: Bundle.main.url(forResource: "android-11/zipalign", withExtension: nil)!, arguments: ["-v", "-p", "4", apkLocation, apkNameAligned]) { (status, outputData) in
             let outputZipalign = String(data: outputData, encoding: .utf8) ?? ""
             print(outputZipalign)
         }
 
         let apkNameAlignedSigned = "\(apkLocationString)/\($appName.wrappedValue)_\($versionName.wrappedValue)_\($versionCode.wrappedValue)_\($debugOption.wrappedValue)_aligned_signed.apk"
+        print("apkNameAlignedSigned:\(apkNameAlignedSigned)")
 
         let signingSchemeInput = $signingScheme.wrappedValue
         
@@ -456,16 +458,18 @@ struct ContentView: View {
             
         VStack {
             GeometryReader { geometry in
-            ScrollView {
+
+                List {
                 //TextEditor(text: $outputVerify)
             Text($outputVerify.wrappedValue)
                     .lineLimit(nil)
                     .frame(width: geometry.size.width)
                     .background(Color.red)
-                //Text(outputSign)
-                }
-            .background(Color.green)
-            }
+            Text(outputSign)
+                .background(Color.blue)
+                        }
+                }.multilineTextAlignment(.center)
+            
             List {
                 
                 ForEach(packageNames) { item in
