@@ -16,8 +16,152 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "297"
             endingLineNumber = "297"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "signApkProcess()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9C3904F1-E73C-4350-9C7A-F8A15AE01ED6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AppSignerGui/ContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "330"
+            endingLineNumber = "330"
+            landmarkName = "signApkProcess()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9C3904F1-E73C-4350-9C7A-F8A15AE01ED6 - 4636a3f698447fca"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int32, Foundation.Data) -&gt; () in AppSignerGui.ContentView.signApkProcess() -&gt; ()"
+                  moduleName = "AppSignerGui"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a11952633/Documents/AppSignerGui/AppSignerGui/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "327"
+                  endingLineNumber = "327"
+                  offsetFromSymbolStart = "4336">
+               </Location>
+               <Location
+                  uuid = "9C3904F1-E73C-4350-9C7A-F8A15AE01ED6 - 42cab2033742707f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int32, Foundation.Data) -&gt; () in closure #1 (Swift.Int32, Foundation.Data) -&gt; () in AppSignerGui.ContentView.signApkProcess() -&gt; ()"
+                  moduleName = "AppSignerGui"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a11952633/Documents/AppSignerGui/AppSignerGui/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "328"
+                  endingLineNumber = "328"
+                  offsetFromSymbolStart = "119">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "39135D62-FA98-46EC-BF22-D82133ABFC05"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AppSignerGui/ContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "457"
+            endingLineNumber = "457"
+            landmarkName = "signApkProcess()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4A9BAA54-5B39-4AE7-9797-02134A726916"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AppSignerGui/ContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "450"
+            endingLineNumber = "450"
+            landmarkName = "signApkProcess()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "90E3315B-48B3-4848-A555-2D058240A658"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AppSignerGui/ContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "446"
+            endingLineNumber = "446"
+            landmarkName = "signApkProcess()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "90E3315B-48B3-4848-A555-2D058240A658 - 4636a3f698446fb3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Int32, Foundation.Data) -&gt; () in AppSignerGui.ContentView.signApkProcess() -&gt; ()"
+                  moduleName = "AppSignerGui"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a11952633/Documents/AppSignerGui/AppSignerGui/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "448"
+                  endingLineNumber = "448"
+                  offsetFromSymbolStart = "12751">
+               </Location>
+               <Location
+                  uuid = "90E3315B-48B3-4848-A555-2D058240A658 - 28256488a4bacad9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Int32, Foundation.Data) -&gt; () in closure #1 (Swift.Int32, Foundation.Data) -&gt; () in AppSignerGui.ContentView.signApkProcess() -&gt; ()"
+                  moduleName = "AppSignerGui"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/a11952633/Documents/AppSignerGui/AppSignerGui/ContentView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "449"
+                  endingLineNumber = "449"
+                  offsetFromSymbolStart = "210">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B83CC308-5E0E-419B-ACEA-1C3B53082671"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AppSignerGui/ContentView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "448"
+            endingLineNumber = "448"
+            landmarkName = "signApkProcess()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
