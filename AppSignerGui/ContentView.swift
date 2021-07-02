@@ -397,7 +397,7 @@ struct ContentView: View {
                             let regex = try! NSRegularExpression(pattern: pattern, options: .anchorsMatchLines)
                             let stringRange = NSRange(location: 0, length: outputApksignerVerify.utf16.count)
                             let substitutionString = ""
-                            let outputApksignerVerifyAfterRegex = regex.stringByReplacingMatches(in: outputApksignerVerify, range: stringRange, withTemplate: substitutionString) 
+                            let outputApksignerVerifyAfterRegex = regex.stringByReplacingMatches(in: outputApksignerVerify, range: stringRange, withTemplate: substitutionString)
                             $outputVerify.wrappedValue = outputApksignerVerifyAfterRegex.trimmingCharacters(in: .whitespacesAndNewlines)
                         }
                     }
@@ -547,12 +547,18 @@ struct ContentView: View {
                     {
                         Text("Sign Apk")
                     }
+                    .disabled(self.appName.isEmpty)
+                    .disabled(self.keyStore.isEmpty)
+                    .disabled(self.keyPass.isEmpty)
                     .padding()
                     
                     Button(action: self.signPackageProcess)
                     {
                         Text("Sign Aab")
                     }
+                    .disabled(self.appName.isEmpty)
+                    .disabled(self.keyStore.isEmpty)
+                    .disabled(self.keyPass.isEmpty)
                     .padding()
                 }
             }
