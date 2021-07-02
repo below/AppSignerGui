@@ -392,11 +392,15 @@ struct ContentView: View {
                         try! androidTools(tool: Bundle.main.url(forResource: "android-11/apksigner", withExtension: nil)!, arguments: ["verify", "--verbose", "--print-certs", apkNameAlignedSigned]) { (status, outputData) in
                             let outputApksignerVerify = String(data: outputData, encoding: .utf8) ?? ""
                             print("done Verify, status: \(status), Verify: \(outputApksignerVerify)")
-                            $outputVerify.wrappedValue = outputApksignerVerify
+                            
+                            let pattern = #"^(WARNING:.[a-zA-Z0-9].*?\b).*$"#
+                            let regex = try! NSRegularExpression(pattern: pattern, options: .anchorsMatchLines)
+                            let stringRange = NSRange(location: 0, length: outputApksignerVerify.utf16.count)
+                            let substitutionString = ""
+                            let outputApksignerVerifyAfterRegex = regex.stringByReplacingMatches(in: outputApksignerVerify, range: stringRange, withTemplate: substitutionString) 
+                            $outputVerify.wrappedValue = outputApksignerVerifyAfterRegex.trimmingCharacters(in: .whitespacesAndNewlines)
                         }
                     }
-                   
-                    
                 }
             }
             else{
@@ -452,7 +456,13 @@ struct ContentView: View {
                     try! androidTools(tool: Bundle.main.url(forResource: "android-11/apksigner", withExtension: nil)!, arguments: ["verify", "--verbose", "--print-certs", apkNameAlignedSigned]) { (status, outputData) in
                         let outputApksignerVerify = String(data: outputData, encoding: .utf8) ?? ""
                         print("done Verify, status: \(status), Verify: \(outputApksignerVerify)")
-                        $outputVerify.wrappedValue = outputApksignerVerify
+                        
+                        let pattern = #"^(WARNING:.[a-zA-Z0-9].*?\b).*$"#
+                        let regex = try! NSRegularExpression(pattern: pattern, options: .anchorsMatchLines)
+                        let stringRange = NSRange(location: 0, length: outputApksignerVerify.utf16.count)
+                        let substitutionString = ""
+                        let outputApksignerVerifyAfterRegex = regex.stringByReplacingMatches(in: outputApksignerVerify, range: stringRange, withTemplate: substitutionString)
+                        $outputVerify.wrappedValue = outputApksignerVerifyAfterRegex.trimmingCharacters(in: .whitespacesAndNewlines)
                     }
                 }
 
